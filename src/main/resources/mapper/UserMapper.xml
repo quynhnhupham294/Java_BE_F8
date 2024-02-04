@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="javawebbef8v1.demo.mapper.UserMapper">
+
+    <resultMap id="UserResultMap" type="javawebbef8v1.demo.entities.User">
+        <result property="userId" column="USER_ID"></result>
+        <result property="userName" column="USER_NAME"></result>
+        <result property="age" column="AGE"></result>
+        <result property="gmail" column="GMAIL"></result>
+        <result property="description" column="DESCRIPTION"></result>
+        <result property="roleId" column="ROLE_ID"></result>
+    </resultMap>
+
+    <select id="getAllUser" resultMap="UserResultMap">
+        SELECT    USER_ID
+                 ,USER_NAME
+                 ,AGE
+                 ,GMAIL
+                 ,description
+                 ,role_id
+        FROM system.F8_USER
+    </select>
+
+</mapper>

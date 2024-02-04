@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>facebook</title>
+
+    <style>
+        body {
+            padding: 30px;
+        }
+        label{
+            color: firebrick;
+            font-size: 1rem;
+        }
+    </style>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+
+</head>
+<body>
+    <label>
+        <p th:text="'This is Facebook page of User Name : '+ ${userName}"></p>
+        <p th:text="'Age : '+${age}"></p>
+        <p th:text="'Major : '+${major}"></p>
+        <p th:text="'Hometown : '+${hometown}"></p>
+    </label>
+    <!-- Giao diện Bootstrap -->
+    <hr>
+    <div>
+        <label>Form Information</label>
+        <div>
+            <label>User Name : </label>
+            <input type="text" th:value ="${userName}">
+        </div>
+        <div>
+            <label>Age : </label>
+            <input type="text">
+        </div>
+        <hr>
+        <div>
+            <div class="row">
+                <div class="col">
+                    <input type="text" class="form-control" placeholder="Name" th:value ="${userName}">
+                </div>
+                <div class="col">
+                    <input type="text" class="form-control" placeholder="Age" aria-label="Age">
+                </div>
+                <div class="col">
+                    <input type="text" class="form-control" placeholder="Major" aria-label="Major">
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
