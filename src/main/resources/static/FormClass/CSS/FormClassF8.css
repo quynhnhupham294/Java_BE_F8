@@ -5,6 +5,7 @@
 #titleLeft, #titleRight{
     font-size: 25px;
     color: red;
+    text-align: center;
 }
 
 #titleLeft:hover{
@@ -42,5 +43,6 @@ tr:hover{
     background-color: darkgrey;
     color: white;
 }
+
 
 

@@ -21,5 +21,4 @@ public class UserApi {
     public ResponseEntity<?> doGetAllUser() {
         return ResponseEntity.ok(userService.getAllUsers());
     }
-
 }
