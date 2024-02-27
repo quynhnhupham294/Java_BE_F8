@@ -8,7 +8,75 @@
 </head>
 <body>
     <div th:fragment="main">
-        <p>Role Form</p>
+        <div class="container px-3 text-center">
+            <div class="row gx-3">
+                <div class="col-7">
+                    <div class="p-3" id="titleLeft">List Mentee</div>
+                    <table class="table table-hover" id="tableListUser">
+                        <thead>
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">First Name</th>
+                            <th scope="col">Last Name</th>
+                            <th scope="col">Major</th>
+                        </tr>
+                        </thead>
+                        <tbody id="tbodyTableLisUserContent">
+
+                        </tbody>
+                    </table>
+                </div>
+                <div class="col-5" id="formDetail">
+                    <div class="p-3" id="titleRight">Form Detail</div>
+                    <div class="mb-3 row">
+                        <label for="userId" class="col-sm-4 col-form-label">#User Id</label>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control" id="userId" placeholder="">
+                        </div>
+                    </div>
+                    <div class="mb-3 row">
+                        <label for="firstName" class="col-sm-4 col-form-label">First Name</label>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control" id="firstName" placeholder="">
+                        </div>
+                    </div>
+                    <div class="mb-3 row">
+                        <label for="lastName" class="col-sm-4 col-form-label">Last Name</label>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control" id="lastName" placeholder="">
+                        </div>
+                    </div>
+                    <div class="mb-3 row">
+                        <label for="major" class="col-sm-4 col-form-label">Major</label>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control" id="major" placeholder="">
+                        </div>
+                    </div>
+                    <div class="mb-3 row">
+                        <label for="exampleFormControlTextarea1" class="col-sm-4 col-form-label">Ghi Chú</label>
+                        <div class="col-sm-8">
+                            <textarea class="form-control" id="exampleFormControlTextarea1" rows="3"></textarea>
+                        </div>
+                    </div>
+                    <div class="container overflow-hidden text-center">
+                        <div class="row gx-5">
+                            <div class="col">
+                                <div class="p-3">
+                                    <button type="button" class="btn btn-primary"
+                                            th:attr="onclick='serviceFormClass.btnSave_click()'">Save</button>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="p-3">
+                                    <button type="button" class="btn btn-success"
+                                            th:attr="onclick='serviceFormClass.btnClearForm_click()'" >Clear</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </body>
 </html>

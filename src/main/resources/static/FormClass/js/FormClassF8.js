@@ -1,25 +1,8 @@
 class FormClassF8 {
-    listUserIn4 = [
-        {userId: 1, firstName: 'Như Quỳnh', lastName:'Phạm', major:'Dev lỏd' },
-        {userId: 2, firstName: 'Hữu Thức', lastName:'Huỳnh', major:'Dev lỏd' },
-        {userId: 3, firstName: 'Trường Huy', lastName:'Nguyễn', major:'Test lỏd' },
-        {userId: 4, firstName: 'Quốc Đạt', lastName:'Nguyễn', major:'Test lỏd' },
-        {userId: 5, firstName: 'Minh Nam', lastName:'Nguyễn', major:'Test lỏd' },
-        {userId: 6, firstName: 'Trường Huy', lastName:'Nguyễn', major:'Test lỏd' },
-        {userId: 8, firstName: 'Trường Huy', lastName:'Nguyễn', major:'Test lỏd' },
-        {userId: 9, firstName: 'Trường Huy', lastName:'Nguyễn', major:'Test lỏd' },
-        {userId: 10, firstName: 'Trường Huy', lastName:'Nguyễn', major:'Test lỏd' },
-        {userId: 11, firstName: 'Trường Huy', lastName:'Nguyễn', major:'Test lỏd' },
-        {userId: 12, firstName: 'Trường Huy', lastName:'Nguyễn', major:'Test lỏd' },
-        {userId: 13, firstName: 'Trường Huy', lastName:'Nguyễn', major:'Test lỏd' },
-        {userId: 14, firstName: 'Trường Huy', lastName:'Nguyễn', major:'Test lỏd' }
-    ];
 
-    listUserIn4v2 = [];
 
     loadInit = () => {
         this.importJsSuccess();
-        // this.createTableListUser(this.listUserIn4v2);
         this.getDataUserIn4();
     }
     importJsSuccess = () =>{
@@ -30,14 +13,14 @@ class FormClassF8 {
         listUserInformation.forEach(e=>{
             tbodyContentString += '<tr>'+
                 `<th scope="row">${e.userId}</th>`+
-                `<td>${e.firstName}</td>`+
-                `<td>${e.lastName}</td>`+
-                `<td>${e.major}</td>`+
+                `<td>${e.userName}</td>`+
+                `<td>${e.age}</td>`+
+                `<td>${e.gmail}</td>`+
+                `<td>${e.description}</td>`+
                 `</tr>`;
         });
         // Jquery
-        $('#tbodyTableLisUserContent').html(tbodyContentString);
-        let table = new DataTable('#tableListUser', {
+         let table = new DataTable('#tableListUser', {
             info: false,
             paging: true,
             ordering: false,
@@ -46,6 +29,7 @@ class FormClassF8 {
                 [4, 5, 6, 'All']
             ]
         });
+        $('#tbodyTableLisUserContent').html(tbodyContentString);
         const labelElement = document.querySelector('#tableListUser_length');
         labelElement.innerHTML = '';
         table.on('dblclick', 'tbody tr', function (x) {
@@ -110,7 +94,7 @@ class FormClassF8 {
     getDataUserIn4 = () => {
         $.ajax({
             type: 'GET',
-            url: '/api/v1/users',
+            url: '/api/v1/users/getAllUser',
             contentType:'application/json',
             success: function(data) {
                 console.log("Call Api /api/v1/users Success");
@@ -139,9 +123,10 @@ class FormClassF8 {
         let listResultAfterFormatDataFromBackEndToFrontEnd = dataBE.map(function (e){
             return {
                 "userId": e.userId,
-                "firstName": e.userName,
-                "lastName": 'NULL',
-                "major": e.description
+                "userName": e.userName,
+                "age": e.age,
+                "gmail": e.gmail,
+                "description": e.description
             }
         });
         this.createTableListUser(listResultAfterFormatDataFromBackEndToFrontEnd);
