@@ -1,26 +1,24 @@
 class FormClassF8 {
 
 
-    loadInit = () => {
+    loadInitRole = () => {
         this.importJsSuccess();
         this.getDataUserIn4();
     }
     importJsSuccess = () =>{
         console.log("Import Js Class F8 Success");
     };
-    createTableListUser = (listUserInformation) =>{
+    createTableListRole = (listUserInformation) =>{
         let tbodyContentString = '';
         listUserInformation.forEach(e=>{
             tbodyContentString += '<tr>'+
-                `<th scope="row">${e.userId}</th>`+
-                `<td>${e.userName}</td>`+
-                `<td>${e.age}</td>`+
-                `<td>${e.gmail}</td>`+
+                `<th scope="row">${e.role_id}</th>`+
+                `<td>${e.role_name}</td>`+
                 `<td>${e.description}</td>`+
                 `</tr>`;
         });
         // Jquery
-         let table = new DataTable('#tableListUser', {
+        let table = new DataTable('#tableListUser', {
             info: false,
             paging: true,
             ordering: false,
@@ -34,10 +32,9 @@ class FormClassF8 {
         labelElement.innerHTML = '';
         table.on('dblclick', 'tbody tr', function (x) {
             let data = table.row(this).data();
-            $('#userId').val(data[0]);
-            $('#firstName').val(data[1]);
-            $('#lastName').val(data[2]);
-            $('#major').val(data[3]);
+            $('#roleId').val(data[0]);
+            $('#roleName').val(data[1]);
+            $('#description').val(data[2]);
         });
     };
 
@@ -95,41 +92,27 @@ class FormClassF8 {
     getDataUserIn4 = () => {
         $.ajax({
             type: 'GET',
-            url: '/api/v1/users/getAllUser',
+            url: '/api/v2/role/getAllRole',
             contentType:'application/json',
             success: function(data) {
-                console.log("Call Api /api/v1/users Success");
+                console.log("Call Api /api/v1/role Success");
                 this.formatDataFromBEToFE(data);
             }.bind(this),
             error: function(error) {
-                console.log("Call Api /api/v1/users Fail");}
+                console.log("Call Api /api/v1/role Fail");}
         }, {})
     };
 
+//     **************************
     formatDataFromBEToFE = (dataBE) => {
         console.log('function Format Data From BE to FE ');
-        //Case1: low level
-        /* let listResultAfterFormatDataFromBackEndToFrontEnd = [];
-         for(let i = 0 ; i < dataBE.length ; i++){
-             let objectConverted = {
-                 "userId": dataBE[i].userId,
-                 "firstName": dataBE[i].userName,
-                 "lastName": 'NULL',
-                 "major": dataBE[i].description
-             };
-             listResultAfterFormatDataFromBackEndToFrontEnd.push(objectConverted);
-         };
-         */
-        //Case2: high level
         let listResultAfterFormatDataFromBackEndToFrontEnd = dataBE.map(function (e){
             return {
-                "userId": e.userId,
-                "userName": e.userName,
-                "age": e.age,
-                "gmail": e.gmail,
+                "role_id": e.role_id,
+                "role_name": e.role_name,
                 "description": e.description
             }
         });
-        this.createTableListUser(listResultAfterFormatDataFromBackEndToFrontEnd);
+        this.createTableListRole(listResultAfterFormatDataFromBackEndToFrontEnd);
     }
 }

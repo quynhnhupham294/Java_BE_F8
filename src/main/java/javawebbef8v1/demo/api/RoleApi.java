@@ -12,7 +12,7 @@ public class RoleApi {
     @Autowired
     RoleService roleService;
 
-    @RequestMapping("getAllRole")
+    @RequestMapping("/getAllRole")
     public ResponseEntity<?> doGetAllRole(){
         return ResponseEntity.ok(roleService.getAllRole());
     }
