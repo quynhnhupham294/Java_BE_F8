@@ -15,5 +15,6 @@ public class User {
     private String gmail;
     private String description;
     private int roleId;
+    private String roleName;
 }
 

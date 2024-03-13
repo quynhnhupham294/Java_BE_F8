@@ -6,8 +6,13 @@ import java.util.List;
 
 public interface UserService {
 
-    List<User> getAllUsers();
+    List<User> getAllUser();
 //    throws SQLException
+    int postUser(User user);
+
+    int putUser(User user);
+
+    int deleteUser(User user);
 
 }
 
