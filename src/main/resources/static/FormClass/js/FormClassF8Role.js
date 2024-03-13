@@ -18,6 +18,7 @@ class FormClassF8 {
                 `</tr>`;
         });
         // Jquery
+        $('#tbodyTableLisUserContent').html(tbodyContentString);
         let table = new DataTable('#tableListUser', {
             info: false,
             paging: true,
@@ -27,13 +28,12 @@ class FormClassF8 {
                 [4, 5, 6, 'All']
             ]
         });
-        $('#tbodyTableLisUserContent').html(tbodyContentString);
         const labelElement = document.querySelector('#tableListUser_length');
         labelElement.innerHTML = '';
         table.on('dblclick', 'tbody tr', function (x) {
             let data = table.row(this).data();
-            $('#roleId').val(data[0]);
-            $('#roleName').val(data[1]);
+            $('#role_id').val(data[0]);
+            $('#role_name').val(data[1]);
             $('#description').val(data[2]);
         });
     };

@@ -1,26 +1,27 @@
 class FormClassF8 {
 
+    listUserIn4 = [];
 
-    loadInit = () => {
-        this.importJsSuccess();
-        this.getDataUserIn4();
+    loadInit = async () => {
+        await this.getDataUserIn4();
+        this.createTableListUser(this.listUserIn4);
     }
-    importJsSuccess = () =>{
-        console.log("Import Js Class F8 Success");
-    };
-    createTableListUser = (listUserInformation) =>{
+
+    createTableListUser = (listUserInformation) => {
         let tbodyContentString = '';
-        listUserInformation.forEach(e=>{
-            tbodyContentString += '<tr>'+
-                `<th scope="row">${e.userId}</th>`+
-                `<td>${e.userName}</td>`+
-                `<td>${e.age}</td>`+
-                `<td>${e.gmail}</td>`+
-                `<td>${e.description}</td>`+
+        listUserInformation.forEach(e => {
+            tbodyContentString += '<tr>' +
+                `<th scope="row">${e.userId}</th>` +
+                `<td>${e.userName}</td>` +
+                `<td>${e.roleName}</td>` +
+                `<td>${e.age}</td>` +
+                `<td>${e.gmail}</td>` +
+                `<td>${e.description}</td>` +
                 `</tr>`;
         });
         // Jquery
-         let table = new DataTable('#tableListUser', {
+        $('#tbodyTableLisUserContent').html(tbodyContentString);
+        let table = new DataTable('#tableListUser', {
             info: false,
             paging: true,
             ordering: false,
@@ -29,82 +30,188 @@ class FormClassF8 {
                 [4, 5, 6, 'All']
             ]
         });
-        $('#tbodyTableLisUserContent').html(tbodyContentString);
         const labelElement = document.querySelector('#tableListUser_length');
         labelElement.innerHTML = '';
         table.on('dblclick', 'tbody tr', function (x) {
             let data = table.row(this).data();
             $('#userId').val(data[0]);
-            $('#firstName').val(data[1]);
-            $('#lastName').val(data[2]);
-            $('#major').val(data[3]);
+            $('#userName').val(data[1]);
+            $('#age').val(data[2]);
+            $('#gmail').val(data[3]);
+            $('#description').val(data[4]);
         });
     };
 
-    rowLicked = (x) =>{
+    rowLicked = (x) => {
         // kiểu dữ liệu Json {key: value}
         // js: const: hằng số
         //      var: có thể ghi đè và 1 lần khai báo
         //      let: trong 1 block
         let userIn4 = {
             userId: x.querySelector('th:nth-child(1)').textContent,
-            firstName: x.querySelector('td:nth-child(2)').textContent,
-            lastName: x.querySelector('td:nth-child(3)').textContent,
-            major: x.querySelector('td:nth-child(4)').textContent
+            userName: x.querySelector('td:nth-child(2)').textContent,
+            age: x.querySelector('td:nth-child(3)').textContent,
+            gmail: x.querySelector('td:nth-child(4)').textContent,
+            description: x.querySelector('td:nth-child(5)').textContent
         };
         this.fillFormInformation(userIn4);
     };
+
     fillFormInformation = (userIn4) => {
         $('#userId').val(userIn4.userId);
-        $('#firstName').val(userIn4.firstName);
-        $('#lastName').val(userIn4.lastName);
-        $('#major').val(userIn4.major);
+        $('#userName').val(userIn4.userName);
+        $('#age').val(userIn4.age);
+        $('#gmail').val(userIn4.gmail);
+        $('#description').val(userIn4.description);
     }
-    btnClearForm_click = () => {
-        this.fillFormInformation({userId: '', firstName: '', lastName: '', major: ''})
-    }
-    btnSave_click = () => {
-        var userId = document.getElementById('userId').value;
-        var firstName = document.getElementById('firstName').value;
-        var userIn4Form = {
-            userId: userId,
-            firstName: firstName,
-            lastName: document.getElementById('lastName').value,
-            major: document.getElementById('major').value
-        }
-        console.log(userIn4Form);
-        if(!this.validateDataFormUser(userIn4Form)){
-            swal("Cảnh Báo!", "Vui Lòng Nhập Đủ Thông Tin", "warning");
-        } else {
-            swal("Đã Nhập UserName!", userIn4Form.firstName);
-        };
 
+    btnClearForm_click = () => {
+        this.fillFormInformation({userId: '', userName: '', age: '', gmail: '', description: ''})
+    }
+
+    // btnDelete_click = () => {}
+    btnDelete_click = async () => {
+        // tao form chua data
+        let dataDeleteForm = {
+            userId: $('#userId').val(),
+            userName: $('#userName').val(),
+            age: $('#age').val(),
+            gmail: $('#gmail').val(),
+            description: $('#description').val()
+        }
+        // KT dữ
+        let result = this.validateDataFormUser(dataDeleteForm);
+
+        if (!result) {
+            swal({
+                text: result,
+                icon: "warning"
+            })
+        } else{
+            // Call Api delete DL
+            const {data:response} = await axios.delete("http://localhost:8888/api/v1/users/deleteUser", {data:dataDeleteForm});
+            // {data:dataDeleteForm}:
+            console.log(response)
+            if(response.status){
+                // Load lại DL nếu xóa thành công
+                var table = new DataTable('#tableListUser');
+                table.destroy();
+                await this.loadInit();
+                swal({
+                    text: response.message,
+                    icon: "success"
+                });
+            } else {
+                swal({
+                    text: response.message,
+                    icon: "warning"
+                });
+            }
+        }
     };
+
+    btnSave_click = async () => {
+        let dataForm = {
+            userId: $('#userId').val(),
+            userName: $('#userName').val(),
+            age: $('#age').val(),
+            gmail: $('#gmail').val(),
+            description: $('#description').val(),
+            roleId: $('#role').val()
+        }
+        console.log(dataForm);
+
+        // if (dataForm.userId !== "") {
+        //     swal({
+        //         text: "Bạn không thể thay đổi userId!" ,
+        //         icon: "warning"
+        //     });
+        //     return;
+        // }
+
+        let validateResult = this.validateDataFormUser(dataForm);
+
+        if (!validateResult) {
+            swal({
+                text: validateResult,
+                icon: "warning"
+            })
+        } else {
+            // call API
+            const {data: response} = await axios.post("http://localhost:8888/api/v1/users/postUser", dataForm);
+            console.log(response)
+            if (response.status) {
+                var table = new DataTable('#tableListUser');
+                table.destroy();
+                await this.loadInit();
+                swal({
+                    text: response.message,
+                    icon: "success"
+                });
+            } else {
+                swal({
+                    text: response.message,
+                    icon: "warning"
+                });
+            }
+            //
+        }
+    };
+    // if (!validateDataFormUser.status){
+    //     swal("Cảnh Báo!", "Vui Lòng Nhập Đủ Thông Tin", "warning");
+    // }
+    // else {
+    //     swal("Success");
+    //     let {data: response} = await axios.post('/api/v1/users/postAllUser',dataForm);
+    // }
+
+    // var userId = document.getElementById('userId').value;
+    // var firstName = document.getElementById('firstName').value;
+    // var userIn4Form = {
+    //     userId: userId,
+    //     firstName: firstName,
+    //     lastName: document.getElementById('lastName').value,
+    //     major: document.getElementById('major').value
+    // }
+    // console.log(userIn4Form);
+    // if(!this.validateDataFormUser(userIn4Form)){
+    //     swal("Cảnh Báo!", "Vui Lòng Nhập Đủ Thông Tin", "warning");
+    // } else {
+    //     swal("Đã Nhập UserName!", userIn4Form.firstName);
+    // };
+
 
     validateDataFormUser = (userIn4) => {
         // nếu userIn4 != null || != undefined => true
         // ! => nếu userIn4 == null || == undefined => true
-        if(userIn4.userId =='' || userIn4.firstName == '' ||
-            userIn4.lastName == '' || userIn4.major == ''){
+        if (!userIn4.userId) {
             return false;
+        } else {
+            return true;
         }
-        return true;
     }
 
     // Call Api by Ajax of Jquery
-    getDataUserIn4 = () => {
-        $.ajax({
-            type: 'GET',
-            url: '/api/v1/users/getAllUser',
-            contentType:'application/json',
-            success: function(data) {
-                console.log("Call Api /api/v1/users Success");
-                this.formatDataFromBEToFE(data);
-            }.bind(this),
-            error: function(error) {
-                console.log("Call Api /api/v1/users Fail");}
-        }, {})
-    };
+    // getDataUserIn4 = () => {
+    //     $.ajax({
+    //         type: 'GET',
+    //         url: '/api/v1/users/getAllUser',
+    //         contentType:'application/json',
+    //         success: function(data) {
+    //             console.log("Call Api /api/v1/users Success");
+    //             this.formatDataFromBEToFE(data);
+    //         }.bind(this),
+    //         error: function(error) {
+    //             console.log("Call Api /api/v1/users Fail");}
+    //     }, {})
+    // };
+
+    // Axios
+    getDataUserIn4 = async () => {
+        console.log("getDataUser");
+        let {data: response} = await axios.get('/api/v1/users/getAllUser',{data: this.listUserIn4});
+        this.listUserIn4 = response.data;
+    }
 
     formatDataFromBEToFE = (dataBE) => {
         console.log('function Format Data From BE to FE ');
@@ -121,10 +228,11 @@ class FormClassF8 {
          };
          */
         //Case2: high level
-        let listResultAfterFormatDataFromBackEndToFrontEnd = dataBE.map(function (e){
+        let listResultAfterFormatDataFromBackEndToFrontEnd = dataBE.map(function (e) {
             return {
                 "userId": e.userId,
                 "userName": e.userName,
+                "roleName": e.roleName,
                 "age": e.age,
                 "gmail": e.gmail,
                 "description": e.description
@@ -132,4 +240,6 @@ class FormClassF8 {
         });
         this.createTableListUser(listResultAfterFormatDataFromBackEndToFrontEnd);
     }
+
+
 }
