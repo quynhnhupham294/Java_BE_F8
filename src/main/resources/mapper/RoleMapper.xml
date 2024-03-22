@@ -9,7 +9,38 @@
     <select id="getAllRole" resultMap="RoleResultMap">
         SELECT   ROLE_ID
                 ,ROLE_NAME
-                ,description
+                ,DESCRIPTION
         FROM system.F8_ROLE
+        ORDER BY ROLE_ID
+    </select>
+
+    <insert id="postRole" parameterType="javawebbef8v1.demo.entities.Role">
+        INSERT INTO system.F8_ROLE (ROLE_ID, ROLE_NAME, DESCRIPTION)
+        VALUES (#{role_id}, #{role_name}, #{description})
+    </insert>
+
+    <update id="putRole" parameterType="javawebbef8v1.demo.entities.Role">
+        UPDATE system.F8_ROLE
+        SET  ROLE_ID = #{role_id}
+           , ROLE_NAME = #{role_name}
+           , DESCRIPTION = #{description}
+        WHERE ROLE_ID = #{role_id}
+    </update>
+
+    <delete id="deleteRole" parameterType="javawebbef8v1.demo.entities.Role">
+        DELETE
+        FROM system.F8_ROLE
+        WHERE ROLE_ID = #{role_id}
+    </delete>
+
+    <select id="isExistsRole" parameterType="Integer" resultType="Integer">
+        SELECT
+            CASE WHEN EXISTS(
+                    SELECT 1
+                    FROM SYSTEM.F8_ROLE
+                    WHERE ROLE_ID = #{role_id})
+                    THEN 1 ELSE 0
+                END
+        FROM dual
     </select>
 </mapper>

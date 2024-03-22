@@ -1,25 +1,24 @@
-class FormClassF8 {
+class FormClassF8Role {
 
+    listRoleIn4 = [];
 
-    loadInitRole = () => {
-        this.importJsSuccess();
-        this.getDataUserIn4();
+    loadInitRole = async () => {
+        await this.getDataRoleIn4();
+        this.createTableListRole(this.listRoleIn4);
     }
-    importJsSuccess = () =>{
-        console.log("Import Js Class F8 Success");
-    };
-    createTableListRole = (listUserInformation) =>{
+
+    createTableListRole = (listRoleInformation) => {
         let tbodyContentString = '';
-        listUserInformation.forEach(e=>{
-            tbodyContentString += '<tr>'+
-                `<th scope="row">${e.role_id}</th>`+
-                `<td>${e.role_name}</td>`+
-                `<td>${e.description}</td>`+
+        listRoleInformation.forEach(e => {
+            tbodyContentString += '<tr>' +
+                `<th scope="row">${e.role_id}</th>` +
+                `<td>${e.role_name}</td>` +
+                `<td>${e.description}</td>` +
                 `</tr>`;
         });
         // Jquery
-        $('#tbodyTableLisUserContent').html(tbodyContentString);
-        let table = new DataTable('#tableListUser', {
+        $('#tbodyTableLisRoleContent').html(tbodyContentString);
+        let table = new DataTable('#tableListRole', {
             info: false,
             paging: true,
             ordering: false,
@@ -28,7 +27,7 @@ class FormClassF8 {
                 [4, 5, 6, 'All']
             ]
         });
-        const labelElement = document.querySelector('#tableListUser_length');
+        const labelElement = document.querySelector('#tableListRole_length');
         labelElement.innerHTML = '';
         table.on('dblclick', 'tbody tr', function (x) {
             let data = table.row(this).data();
@@ -38,75 +37,120 @@ class FormClassF8 {
         });
     };
 
-    rowLicked = (x) =>{
-        // kiểu dữ liệu Json {key: value}
-        // js: const: hằng số
-        //      var: có thể ghi đè và 1 lần khai báo
-        //      let: trong 1 block
-        let userIn4 = {
-            userId: x.querySelector('th:nth-child(1)').textContent,
-            firstName: x.querySelector('td:nth-child(2)').textContent,
-            lastName: x.querySelector('td:nth-child(3)').textContent,
-            major: x.querySelector('td:nth-child(4)').textContent
+    rowLicked = (x) => {
+        let roleIn4 = {
+            role_id: x.querySelector('th:nth-child(1)').textContent,
+            role_name: x.querySelector('td:nth-child(2)').textContent,
+            description: x.querySelector('td:nth-child(3)').textContent
         };
-        this.fillFormInformation(userIn4);
+        this.fillFormInformation(roleIn4);
     };
-    fillFormInformation = (userIn4) => {
-        $('#userId').val(userIn4.userId);
-        $('#firstName').val(userIn4.firstName);
-        $('#lastName').val(userIn4.lastName);
-        $('#major').val(userIn4.major);
+
+    fillFormInformation = (roleIn4) => {
+        $('#role_id').val(roleIn4.role_id);
+        $('#role_name').val(roleIn4.role_name);
+        $('#description').val(roleIn4.description);
     }
+
     btnClearForm_click = () => {
-        this.fillFormInformation({userId: '', firstName: '', lastName: '', major: ''})
+        this.fillFormInformation({role_id: '', role_name: '', description: ''})
     }
-    btnSave_click = () => {
-        var userId = document.getElementById('userId').value;
-        var firstName = document.getElementById('firstName').value;
-        var userIn4Form = {
-            userId: userId,
-            firstName: firstName,
-            lastName: document.getElementById('lastName').value,
-            major: document.getElementById('major').value
+
+    btnDelete_click = async () => {
+        // tao form chua data
+        let dataDeleteForm = {
+            role_id: $('#role_id').val(),
+            role_name: $('#role_name').val(),
+            description: $('#description').val()
         }
-        console.log(userIn4Form);
-        if(!this.validateDataFormUser(userIn4Form)){
-            swal("Cảnh Báo!", "Vui Lòng Nhập Đủ Thông Tin", "warning");
+        // KT DL
+        let result = this.validateDataFormRole(dataDeleteForm);
+
+        if (!result) {
+            swal({
+                text: result,
+                icon: "warning"
+            })
+        } else{
+            // Call Api delete DL
+            const {data:response} = await axios.delete("http://localhost:8888/api/v2/role/deleteRole", {data: dataDeleteForm});
+            // {data:dataDeleteForm}:
+            console.log(response)
+            if(response.status){
+                // Load lại DL nếu xóa thành công
+                var table = new DataTable('#tableListRole');
+                table.destroy();
+                await this.loadInitRole();
+                swal({
+                    text: response.message,
+                    icon: "success"
+                });
+            } else {
+                swal({
+                    text: response.message,
+                    icon: "warning"
+                });
+            }
+        }
+    };
+
+    btnSave_click = async () => {
+        let dataForm = {
+            role_id: $('#role_id').val(),
+            role_name: $('#role_name').val(),
+            description: $('#description').val()
+        }
+        console.log(dataForm);
+
+        // check tính hợp lệ
+        let validateResult = this.validateDataFormRole(dataForm);
+
+        if (!validateResult) {
+            swal({
+                text: validateResult,
+                icon: "warning"
+            })
         } else {
-            swal("Đã Nhập UserName!", userIn4Form.firstName);
-        };
-
+            // call API
+            const {data: response} = await axios.post("http://localhost:8888/api/v2/role/postRole", dataForm);
+            console.log(response)
+            if (response.status) {
+                var table = new DataTable('#tableListRole');
+                table.destroy(); // xóa trắng form
+                await this.loadInitRole();
+                swal({
+                    text: response.message,
+                    icon: "success"
+                });
+            } else {
+                swal({
+                    text: response.message,
+                    icon: "warning"
+                });
+            }
+            //
+        }
     };
 
-    validateDataFormUser = (userIn4) => {
-        // nếu userIn4 != null || != undefined => true
-        // ! => nếu userIn4 == null || == undefined => true
-        if(userIn4.userId =='' || userIn4.firstName == '' ||
-            userIn4.lastName == '' || userIn4.major == ''){
+    validateDataFormRole = (roleIn4) => {
+        if (!roleIn4.role_id) {
             return false;
+        } else {
+            return true;
         }
-        return true;
     }
 
-    // Call Api by Ajax of Jquery
-    getDataUserIn4 = () => {
-        $.ajax({
-            type: 'GET',
-            url: '/api/v2/role/getAllRole',
-            contentType:'application/json',
-            success: function(data) {
-                console.log("Call Api /api/v1/role Success");
-                this.formatDataFromBEToFE(data);
-            }.bind(this),
-            error: function(error) {
-                console.log("Call Api /api/v1/role Fail");}
-        }, {})
-    };
+    // Axios
+    getDataRoleIn4 = async () => {
+        console.log("getDataRole");
+        let {data: response} = await axios.get('/api/v2/role/getAllRole',{data: this.listRoleIn4});
+        this.listRoleIn4 = response.data;
+    }
 
-//     **************************
     formatDataFromBEToFE = (dataBE) => {
         console.log('function Format Data From BE to FE ');
-        let listResultAfterFormatDataFromBackEndToFrontEnd = dataBE.map(function (e){
+        //Case2: high level
+        let listResultAfterFormatDataFromBackEndToFrontEnd = dataBE.map(function (e) {
             return {
                 "role_id": e.role_id,
                 "role_name": e.role_name,
@@ -115,4 +159,5 @@ class FormClassF8 {
         });
         this.createTableListRole(listResultAfterFormatDataFromBackEndToFrontEnd);
     }
+
 }
