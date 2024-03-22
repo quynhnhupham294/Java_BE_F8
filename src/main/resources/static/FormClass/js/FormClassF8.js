@@ -5,6 +5,7 @@ class FormClassF8 {
     loadInit = async () => {
         await this.getDataUserIn4();
         this.createTableListUser(this.listUserIn4);
+        await this.createComponentSelectRole();
     }
 
     createTableListUser = (listUserInformation) => {
@@ -13,13 +14,17 @@ class FormClassF8 {
             tbodyContentString += '<tr>' +
                 `<th scope="row">${e.userId}</th>` +
                 `<td>${e.userName}</td>` +
-                `<td>${e.roleName}</td>` +
                 `<td>${e.age}</td>` +
                 `<td>${e.gmail}</td>` +
+                `<td>${e.roleName}</td>` +
                 `<td>${e.description}</td>` +
                 `</tr>`;
         });
         // Jquery
+        // if ($.fn.DataTable.isDataTable(#tableListUser)){
+        //     $('#tableListUser').DataTable().destroy();
+        // }
+
         $('#tbodyTableLisUserContent').html(tbodyContentString);
         let table = new DataTable('#tableListUser', {
             info: false,
@@ -38,7 +43,8 @@ class FormClassF8 {
             $('#userName').val(data[1]);
             $('#age').val(data[2]);
             $('#gmail').val(data[3]);
-            $('#description').val(data[4]);
+            $('#role_name').val(data[4])
+            $('#description').val(data[5]);
         });
     };
 
@@ -52,7 +58,8 @@ class FormClassF8 {
             userName: x.querySelector('td:nth-child(2)').textContent,
             age: x.querySelector('td:nth-child(3)').textContent,
             gmail: x.querySelector('td:nth-child(4)').textContent,
-            description: x.querySelector('td:nth-child(5)').textContent
+            role_id: x.querySelector('td:nth-child(5)').textContent,
+            description: x.querySelector('td:nth-child(6)').textContent
         };
         this.fillFormInformation(userIn4);
     };
@@ -62,6 +69,7 @@ class FormClassF8 {
         $('#userName').val(userIn4.userName);
         $('#age').val(userIn4.age);
         $('#gmail').val(userIn4.gmail);
+        $('#role_id').val(userIn4.role_id);
         $('#description').val(userIn4.description);
     }
 
@@ -116,19 +124,13 @@ class FormClassF8 {
             userName: $('#userName').val(),
             age: $('#age').val(),
             gmail: $('#gmail').val(),
-            description: $('#description').val(),
-            roleId: $('#role').val()
+            role_name: $('#role_name').val(),
+            description: $('#description').val()
+
         }
         console.log(dataForm);
 
-        // if (dataForm.userId !== "") {
-        //     swal({
-        //         text: "Bạn không thể thay đổi userId!" ,
-        //         icon: "warning"
-        //     });
-        //     return;
-        // }
-
+        // check tính hợp lệ
         let validateResult = this.validateDataFormUser(dataForm);
 
         if (!validateResult) {
@@ -142,7 +144,7 @@ class FormClassF8 {
             console.log(response)
             if (response.status) {
                 var table = new DataTable('#tableListUser');
-                table.destroy();
+                table.destroy(); // xóa trắng form
                 await this.loadInit();
                 swal({
                     text: response.message,
@@ -184,10 +186,17 @@ class FormClassF8 {
     validateDataFormUser = (userIn4) => {
         // nếu userIn4 != null || != undefined => true
         // ! => nếu userIn4 == null || == undefined => true
-        if (!userIn4.userId) {
-            return false;
-        } else {
-            return true;
+        if(!userIn4.userId || !userIn4.userName || !userIn4.role_name || !userIn4.age || !userIn4.gmail || !user.description) {
+            return {
+                status: false,
+                message: 'Required to fill in all information'
+            }
+        }
+        else{
+            return {
+                status: true,
+                message: 'Successful data validation'
+            }
         }
     }
 
@@ -241,5 +250,21 @@ class FormClassF8 {
         this.createTableListUser(listResultAfterFormatDataFromBackEndToFrontEnd);
     }
 
+//    dynamic component listRole uiUserPage
+    createComponentSelectRole = async () => {
+        // Call API để lấy dữ liệu Role
+        let { data: dataRole } = await axios.get("/api/v2/role/getAllRole");
+
+        if (dataRole.status) {
+            // Tạo thành phần Role
+            let componentRoleString = `<select id="role_id" class="form-select">`;
+            dataRole.data.forEach((e) => {
+                componentRoleString += `<option value="${e.role_id}">${e.role_name}</option>`;
+            });
+            componentRoleString += `</select>`;
+            // Chèn danh sách vai trò vào phần tử có id là componentSelectRole
+            $("#componentSelectRole").html(componentRoleString);
+        }
+    };
 
 }

@@ -15,7 +15,7 @@
         <link rel="stylesheet" th:href="@{/FormClass/CSS/FormClassF8.css}" >
         <script src="/FormClass/js/FormClassF8Role.js"></script>
         <script>
-            const serviceFormClass = new FormClassF8();
+            const serviceFormClass = new FormClassF8Role();
         </script>
         <script type="text/javascript">
             $(document).ready(function (){
@@ -28,7 +28,7 @@
             <div class="row gx-3">
                 <div class="col-7">
                     <div class="p-3" id="titleLeft">List Mentee</div>
-                    <table class="table table-hover" id="tableListUser">
+                    <table class="table table-hover" id="tableListRole">
                         <thead>
                         <tr>
                             <th scope="col">Role ID</th>
@@ -36,7 +36,7 @@
                             <th scope="col">Description</th>
                         </tr>
                         </thead>
-                        <tbody id="tbodyTableLisUserContent">
+                        <tbody id="tbodyTableLisRoleContent">
 
                         </tbody>
                     </table>
@@ -61,18 +61,18 @@
                             <input type="text" class="form-control" id="description" placeholder="">
                         </div>
                     </div>
-                    <div class="mb-3 row">
-                        <label for="exampleFormControlTextarea1" class="col-sm-4 col-form-label">Ghi Chú</label>
-                        <div class="col-sm-8">
-                            <textarea class="form-control" id="exampleFormControlTextarea1" rows="3"></textarea>
-                        </div>
-                    </div>
                     <div class="container overflow-hidden text-center">
                         <div class="row gx-5">
                             <div class="col">
                                 <div class="p-3">
                                     <button type="button" class="btn btn-primary"
                                             th:attr="onclick='serviceFormClass.btnSave_click()'">Save</button>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="p-3">
+                                    <button type="button" class="btn btn-secondary"
+                                            th:attr="onclick='serviceFormClass.btnDelete_click()'">Delete</button>
                                 </div>
                             </div>
                             <div class="col">
