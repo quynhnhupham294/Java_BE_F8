@@ -20,10 +20,10 @@ class FormClassF8 {
                 `<td>${e.description}</td>` +
                 `</tr>`;
         });
-        // Jquery
-        // if ($.fn.DataTable.isDataTable(#tableListUser)){
-        //     $('#tableListUser').DataTable().destroy();
-        // }
+        // Jquery to destroy table
+        if ($.fn.DataTable.isDataTable('#tableListUser')){
+            $('#tableListUser').DataTable().destroy();
+        }
 
         $('#tbodyTableLisUserContent').html(tbodyContentString);
         let table = new DataTable('#tableListUser', {
@@ -43,7 +43,7 @@ class FormClassF8 {
             $('#userName').val(data[1]);
             $('#age').val(data[2]);
             $('#gmail').val(data[3]);
-            $('#role_name').val(data[4])
+            $('#role_id').val(data[4]);
             $('#description').val(data[5]);
         });
     };
@@ -69,15 +69,15 @@ class FormClassF8 {
         $('#userName').val(userIn4.userName);
         $('#age').val(userIn4.age);
         $('#gmail').val(userIn4.gmail);
-        $('#role_id').val(userIn4.role_id);
+        $('#role_id').val(userIn4.role.role_id);
         $('#description').val(userIn4.description);
     }
+
 
     btnClearForm_click = () => {
         this.fillFormInformation({userId: '', userName: '', age: '', gmail: '', description: ''})
     }
 
-    // btnDelete_click = () => {}
     btnDelete_click = async () => {
         // tao form chua data
         let dataDeleteForm = {
@@ -124,7 +124,7 @@ class FormClassF8 {
             userName: $('#userName').val(),
             age: $('#age').val(),
             gmail: $('#gmail').val(),
-            role_name: $('#role_name').val(),
+            roleId: $('#role_id').val(), //
             description: $('#description').val()
 
         }
@@ -141,7 +141,6 @@ class FormClassF8 {
         } else {
             // call API
             const {data: response} = await axios.post("http://localhost:8888/api/v1/users/postUser", dataForm);
-            console.log(response)
             if (response.status) {
                 var table = new DataTable('#tableListUser');
                 table.destroy(); // xóa trắng form
@@ -182,11 +181,10 @@ class FormClassF8 {
     //     swal("Đã Nhập UserName!", userIn4Form.firstName);
     // };
 
-
     validateDataFormUser = (userIn4) => {
         // nếu userIn4 != null || != undefined => true
         // ! => nếu userIn4 == null || == undefined => true
-        if(!userIn4.userId || !userIn4.userName || !userIn4.role_name || !userIn4.age || !userIn4.gmail || !user.description) {
+        if(!userIn4.userId || !userIn4.userName || !userIn4.age || !userIn4.gmail || !userIn4.role_name || !userIn4.description) {
             return {
                 status: false,
                 message: 'Required to fill in all information'
@@ -241,9 +239,9 @@ class FormClassF8 {
             return {
                 "userId": e.userId,
                 "userName": e.userName,
-                "roleName": e.roleName,
                 "age": e.age,
                 "gmail": e.gmail,
+                "roleName": e.roleName,
                 "description": e.description
             }
         });
@@ -255,15 +253,14 @@ class FormClassF8 {
         // Call API để lấy dữ liệu Role
         let { data: dataRole } = await axios.get("/api/v2/role/getAllRole");
 
-        if (dataRole.status) {
-            // Tạo thành phần Role
+        if(dataRole.status){
+            // Create Component Role
             let componentRoleString = `<select id="role_id" class="form-select">`;
-            dataRole.data.forEach((e) => {
-                componentRoleString += `<option value="${e.role_id}">${e.role_name}</option>`;
+            dataRole.data.forEach( (e) => {
+                componentRoleString += `<option value="${e.role_id}">${e.role_name}</option>`
             });
-            componentRoleString += `</select>`;
-            // Chèn danh sách vai trò vào phần tử có id là componentSelectRole
-            $("#componentSelectRole").html(componentRoleString);
+            componentRoleString +=`</select>`;
+            $("#componentSelectRole").html(componentRoleString)
         }
     };
 
