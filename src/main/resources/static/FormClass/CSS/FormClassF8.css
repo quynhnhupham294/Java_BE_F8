@@ -15,21 +15,21 @@
 }
 
 #titleRight:hover{
-    font-size: 40px;
+    font-size: 35px;
     color: pink;
     cursor: pointer;
 }
 
 tr:hover{
-    font-size: 15px;
+    /*font-size: 15px;*/
     cursor: pointer;
 }
 
-#tableListUser_filter {
+#tableListUser_filter, #tableListRole_filter{
     float: right;
 }
 
-#tableListUser_paginate{
+#tableListUser_paginate, #tableListRole_paginate{
     float: left;
 }
 
@@ -38,7 +38,18 @@ tr:hover{
     text-decoration: none;
 }
 
+#tableListRole_paginate a{
+    margin: 10px;
+    text-decoration: none;
+}
+
 #tableListUser_paginate a:hover{
+    cursor: pointer;
+    background-color: darkgrey;
+    color: white;
+}
+
+#tableListRole_paginate a:hover{
     cursor: pointer;
     background-color: darkgrey;
     color: white;
