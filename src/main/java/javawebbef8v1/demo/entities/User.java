@@ -16,6 +16,6 @@ public class User {
     private String description;
     private int roleId;
     private String roleName;
-    private Role role;
+//    private Role role;
 }
 

@@ -6,17 +6,20 @@ class FormClassF8 {
         await this.getDataUserIn4();
         this.createTableListUser(this.listUserIn4);
         await this.createComponentSelectRole();
+
     }
 
     createTableListUser = (listUserInformation) => {
         let tbodyContentString = '';
+        //create table
         listUserInformation.forEach(e => {
             tbodyContentString += '<tr>' +
                 `<th scope="row">${e.userId}</th>` +
                 `<td>${e.userName}</td>` +
                 `<td>${e.age}</td>` +
                 `<td>${e.gmail}</td>` +
-                `<td>${e.roleName}</td>` +
+                `<td hidden>${e.roleId}</td>` +
+                `<td>${e.roleName}</td>` + //form listDetail
                 `<td>${e.description}</td>` +
                 `</tr>`;
         });
@@ -37,45 +40,50 @@ class FormClassF8 {
         });
         const labelElement = document.querySelector('#tableListUser_length');
         labelElement.innerHTML = '';
+        // Create event double click on table
         table.on('dblclick', 'tbody tr', function (x) {
             let data = table.row(this).data();
+            console.log(data);
             $('#userId').val(data[0]);
             $('#userName').val(data[1]);
             $('#age').val(data[2]);
             $('#gmail').val(data[3]);
             $('#role_id').val(data[4]);
-            $('#description').val(data[5]);
+
+            $('#description').val(data[6]);
         });
     };
 
-    rowLicked = (x) => {
-        // kiểu dữ liệu Json {key: value}
-        // js: const: hằng số
-        //      var: có thể ghi đè và 1 lần khai báo
-        //      let: trong 1 block
-        let userIn4 = {
-            userId: x.querySelector('th:nth-child(1)').textContent,
-            userName: x.querySelector('td:nth-child(2)').textContent,
-            age: x.querySelector('td:nth-child(3)').textContent,
-            gmail: x.querySelector('td:nth-child(4)').textContent,
-            role_id: x.querySelector('td:nth-child(5)').textContent,
-            description: x.querySelector('td:nth-child(6)').textContent
-        };
-        this.fillFormInformation(userIn4);
-    };
+    // rowLicked = (x) => {
+    //     // kiểu dữ liệu Json {key: value}
+    //     // js: const: hằng số
+    //     //      var: có thể ghi đè và 1 lần khai báo
+    //     //      let: trong 1 block
+    //     let userIn4 = {
+    //         userId: x.querySelector('th:nth-child(1)').textContent,
+    //         userName: x.querySelector('td:nth-child(2)').textContent,
+    //         age: x.querySelector('td:nth-child(3)').textContent,
+    //         gmail: x.querySelector('td:nth-child(4)').textContent,
+    //         roleId: x.querySelector('td:nth-child(5)').textContent,
+    //         // roleName: x.querySelector('td:nth-child(6)').textContent,
+    //         description: x.querySelector('td:nth-child(6)').textContent
+    //     };
+    //     console.table(userIn4);
+    //     this.fillFormInformation(userIn4);
+    //
+    // };
 
     fillFormInformation = (userIn4) => {
         $('#userId').val(userIn4.userId);
         $('#userName').val(userIn4.userName);
         $('#age').val(userIn4.age);
         $('#gmail').val(userIn4.gmail);
-        $('#role_id').val(userIn4.role.role_id);
+        $('#role_id').val(userIn4.roleId); //
         $('#description').val(userIn4.description);
     }
 
-
     btnClearForm_click = () => {
-        this.fillFormInformation({userId: '', userName: '', age: '', gmail: '', description: ''})
+        this.fillFormInformation({userId: '', userName: '', age: '', gmail: '',role_name: '', description: ''})
     }
 
     btnDelete_click = async () => {
@@ -85,6 +93,7 @@ class FormClassF8 {
             userName: $('#userName').val(),
             age: $('#age').val(),
             gmail: $('#gmail').val(),
+            roleId: $('#role_id').val(),
             description: $('#description').val()
         }
         // KT dữ
@@ -184,7 +193,7 @@ class FormClassF8 {
     validateDataFormUser = (userIn4) => {
         // nếu userIn4 != null || != undefined => true
         // ! => nếu userIn4 == null || == undefined => true
-        if(!userIn4.userId || !userIn4.userName || !userIn4.age || !userIn4.gmail || !userIn4.role_name || !userIn4.description) {
+        if(!userIn4.userId || !userIn4.userName || !userIn4.age || !userIn4.gmail || !userIn4.roleId || !userIn4.description) {
             return {
                 status: false,
                 message: 'Required to fill in all information'
